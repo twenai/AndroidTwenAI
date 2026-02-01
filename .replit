@@ -1,0 +1,45 @@
+modules = ["web", "nodejs-20"]
+run = "npm run dev"
+hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
+
+[nix]
+channel = "stable-25_05"
+packages = ["gradle", "zulu23"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[env]
+PORT = "5000"
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["node", "./dist/index.cjs"]
+build = ["npm", "run", "build"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Info Proyek"
+
+[[workflows.workflow]]
+name = "Info Proyek"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "echo \"Proyek Android: Aplikasi ini diatur untuk build otomatis menggunakan GitHub Actions. Setiap perubahan pada branch 'main' akan memicu pembuatan file APK baru yang dapat diunduh di tab 'Actions' pada repositori GitHub Anda.\" && tail -f /dev/null"
+
+[agent]
+expertMode = true
